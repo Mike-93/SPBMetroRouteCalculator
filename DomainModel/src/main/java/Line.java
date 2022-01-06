@@ -1,10 +1,10 @@
-package core;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Line implements Comparable<Line>
-{
+@Data
+public class Line implements Comparable<Line> {
     private int number;
     private String name;
     private List<Station> stations;
@@ -16,35 +16,18 @@ public class Line implements Comparable<Line>
         stations = new ArrayList<>();
     }
 
-    public int getNumber()
-    {
-        return number;
-    }
-
-    public String getName()
-    {
-        return name;
-    }
-
     public void addStation(Station station)
     {
         stations.add(station);
     }
 
-    public List<Station> getStations()
-    {
-        return stations;
-    }
-
     @Override
-    public int compareTo(Line line)
-    {
+    public int compareTo(Line line) {
         return Integer.compare(number, line.getNumber());
     }
 
     @Override
-    public boolean equals(Object obj)
-    {
+    public boolean equals(Object obj) {
         return compareTo((Line) obj) == 0;
     }
 }
