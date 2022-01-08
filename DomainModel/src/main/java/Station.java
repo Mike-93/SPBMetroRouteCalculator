@@ -1,5 +1,7 @@
 import lombok.Data;
 
+import java.util.Objects;
+
 @Data
 public class Station implements Comparable<Station> {
     private Line line;
@@ -23,6 +25,11 @@ public class Station implements Comparable<Station> {
     @Override
     public boolean equals(Object obj) {
         return compareTo((Station) obj) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(line, name);
     }
 
     @Override

@@ -5,11 +5,12 @@ import java.util.List;
 public class RouteOnTheLineStrategy implements RouteStrategy{
 
     @Override
-    public List<Station> getRoute(Station from, Station to, StationIndex stationIndex) {
+    public Route getRoute(Station from, Station to, MetroMap metroMap) {
         if (!from.getLine().equals(to.getLine())) {
             return null;
         }
-        ArrayList<Station> route = new ArrayList<>();
+        Route route = new Route();
+        ArrayList<Station> stationList = new ArrayList<>();
         List<Station> stations = from.getLine().getStations();
         int direction = 0;
         for (Station station : stations) {
@@ -22,7 +23,7 @@ public class RouteOnTheLineStrategy implements RouteStrategy{
             }
 
             if (direction != 0) {
-                route.add(station);
+                stationList.add(station);
             }
 
             if ((direction == 1 && station.equals(to)) ||
@@ -31,8 +32,9 @@ public class RouteOnTheLineStrategy implements RouteStrategy{
             }
         }
         if (direction == -1) {
-            Collections.reverse(route);
+            Collections.reverse(stationList);
         }
+        route.setStations(stationList);
         return route;
     }
 }

@@ -8,11 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Parser {
-    private static StationIndex stationIndex;
-    private static String dataFile = "MetroMapLoader/src/main/resources/map.json";
 
-    public StationIndex createStationIndex() {
-        stationIndex = new StationIndex();
+    private static MetroMap metroMap;
+    private static final String dataFile = "MetroMapLoader/src/main/resources/map.json";
+
+    public MetroMap createMetroMap() {
+        metroMap = new MetroMap();
         try {
             JSONParser parser = new JSONParser();
             JSONObject jsonData = (JSONObject) parser.parse(getJsonFile());
@@ -28,7 +29,7 @@ public class Parser {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return stationIndex;
+        return metroMap;
     }
 
     private static void parseConnections(JSONArray connectionsArray) {
@@ -42,14 +43,14 @@ public class Parser {
                 int lineNumber = ((Long) itemObject.get("line")).intValue();
                 String stationName = (String) itemObject.get("station");
 
-                Station station = stationIndex.getStation(stationName, lineNumber);
+                Station station = metroMap.getStation(stationName, lineNumber);
                 if (station == null) {
                     throw new IllegalArgumentException("Station " +
                             stationName + " on line " + lineNumber + " not found");
                 }
                 connectionStations.add(station);
             });
-            stationIndex.addConnection(connectionStations);
+            metroMap.addConnection(connectionStations);
         });
     }
 
@@ -57,12 +58,12 @@ public class Parser {
         stationsObject.keySet().forEach(lineNumberObject ->
         {
             int lineNumber = Integer.parseInt((String) lineNumberObject);
-            Line line = stationIndex.getLine(lineNumber);
+            Line line = metroMap.getLine(lineNumber);
             JSONArray stationsArray = (JSONArray) stationsObject.get(lineNumberObject);
             stationsArray.forEach(stationObject ->
             {
                 Station station = new Station((String) stationObject, line);
-                stationIndex.addStation(station);
+                metroMap.addStation(station);
                 line.addStation(station);
             });
         });
@@ -75,7 +76,7 @@ public class Parser {
                     ((Long) lineJsonObject.get("number")).intValue(),
                     (String) lineJsonObject.get("name")
             );
-            stationIndex.addLine(line);
+            metroMap.addLine(line);
         });
     }
 
@@ -83,7 +84,7 @@ public class Parser {
         StringBuilder builder = new StringBuilder();
         try {
             List<String> lines = Files.readAllLines(Paths.get(dataFile));
-            lines.forEach(line -> builder.append(line));
+            lines.forEach(builder::append);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

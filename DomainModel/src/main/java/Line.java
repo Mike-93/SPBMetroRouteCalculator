@@ -30,4 +30,9 @@ public class Line implements Comparable<Line> {
     public boolean equals(Object obj) {
         return compareTo((Line) obj) == 0;
     }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }
