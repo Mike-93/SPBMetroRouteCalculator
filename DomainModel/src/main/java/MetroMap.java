@@ -5,9 +5,9 @@ import java.util.stream.Collectors;
 
 @Data
 public class MetroMap {
-    HashMap<Integer, Line> number2line;
-    TreeSet<Station> stations;
-    TreeMap<Station, TreeSet<Station>> connections;
+    private final HashMap<Integer, Line> number2line;
+    private final TreeSet<Station> stations;
+    private final TreeMap<Station, TreeSet<Station>> connections;
 
     public MetroMap() {
         number2line = new HashMap<>();
@@ -25,7 +25,7 @@ public class MetroMap {
 
     public void addConnection(List<Station> stations) {
         for (Station station : stations) {
-            if (!connections.containsKey(station)) {
+        if (!connections.containsKey(station)) {
                 connections.put(station, new TreeSet<>());
             }
             TreeSet<Station> connectedStations = connections.get(station);
@@ -48,9 +48,12 @@ public class MetroMap {
     }
 
     public Station getStation(String name, int lineNumber) {
-        Station query = new Station(name, getLine(lineNumber));
-        Station station = stations.ceiling(query);
-        return station.equals(query) ? station : null;
+        Station station = new Station(name, getLine(lineNumber));
+        if (stations.contains(station)) {
+            return station;
+        } else {
+            return null;
+        }
     }
 
     public Set<Station> getConnectedStations(Station station) {

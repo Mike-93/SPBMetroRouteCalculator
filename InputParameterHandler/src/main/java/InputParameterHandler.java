@@ -11,6 +11,8 @@ public class InputParameterHandler {
     private static final Marker SEARCH_MARKER = MarkerManager.getMarker("search");
     private static final Marker EXCEPTION_MARKER = MarkerManager.getMarker("exceptions");
     private static final Marker INPUT_ERRORS_MARKER = MarkerManager.getMarker("inputErrors");
+    private static final String SRC_MESSAGE = "Введите станцию отправления:";
+    private static final String DST_MESSAGE = "Введите станцию назначения:";
     private static final Parser parser = new Parser();
     private static Scanner scanner;
 
@@ -26,8 +28,8 @@ public class InputParameterHandler {
         scanner = new Scanner(System.in);
         for (; ; ) {
             try {
-                Station from = takeStation("Введите станцию отправления:", metroMap);
-                Station to = takeStation("Введите станцию назначения:", metroMap);
+                Station from = takeStation(SRC_MESSAGE, metroMap);
+                Station to = takeStation(DST_MESSAGE, metroMap);
 
                 Route route = calculator.getShortestRoute(from, to);
                 System.out.println("Маршрут:");
@@ -42,7 +44,7 @@ public class InputParameterHandler {
     }
 
     private static void printRoute(Route route) {
-        List <Station> stationList = route.getStations();
+        List<Station> stationList = route.getStations();
         Station previousStation = null;
         for (Station station : stationList) {
             if (previousStation != null) {
@@ -62,13 +64,19 @@ public class InputParameterHandler {
         for (; ; ) {
             System.out.println(message);
             String line = scanner.nextLine().trim();
-            Station station = metroMap.getStation(line);
-            if (station != null) {
-                logger.info(SEARCH_MARKER, "Поиск станции " + line);
-                return station;
+            logger.info(SEARCH_MARKER, "Поиск станции " + line);
+            try {
+                Station station = metroMap.getStation(line);
+                if (station != null) {
+                    return station;
+                } else {
+                    System.out.println("Станция не найдена :(");
+                    throw new Exception("Station not found");
+                }
+            } catch (Exception exception) {
+                logger.warn(INPUT_ERRORS_MARKER, "Станция не найдена " + line);
             }
-            logger.warn(INPUT_ERRORS_MARKER, "Станция не найдена " + line);
-            System.out.println("Станция не найдена :(");
+
         }
     }
 

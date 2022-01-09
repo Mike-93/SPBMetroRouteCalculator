@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class RouteWithTwoConnectionsStrategy implements RouteStrategy{
+public class RouteWithTwoConnectionsStrategy implements RouteStrategy {
 
     private final RouteOnTheLineStrategy routeOnTheLineStrategy = new RouteOnTheLineStrategy();
 
@@ -26,28 +26,22 @@ public class RouteWithTwoConnectionsStrategy implements RouteStrategy{
         }
 
         Route route = new Route();
-        ArrayList<Station> stationList = new ArrayList<>();
-
         List<Station> fromLineStations = from.getLine().getStations();
         List<Station> toLineStations = to.getLine().getStations();
         for (Station srcStation : fromLineStations) {
             for (Station dstStation : toLineStations) {
                 List<Station> connectedLineRoute =
                         getRouteViaConnectedLine(srcStation, dstStation, metroMap);
-                if (connectedLineRoute == null) {
+                if (connectedLineRoute == null || connectedLineRoute.isEmpty()) {
                     continue;
                 }
                 ArrayList<Station> way = new ArrayList<>();
                 way.addAll(routeOnTheLineStrategy.getRoute(from, srcStation, metroMap).getStations());
                 way.addAll(connectedLineRoute);
                 way.addAll(routeOnTheLineStrategy.getRoute(dstStation, to, metroMap).getStations());
-                if (stationList.isEmpty() || stationList.size() > way.size()) {
-                    stationList.clear();
-                    stationList.addAll(way);
-                }
+                route.setStations(way);
             }
         }
-        route.setStations(stationList);
         return route;
     }
 }

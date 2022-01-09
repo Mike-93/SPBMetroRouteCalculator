@@ -17,7 +17,6 @@ public class RouteWithOneConnectionStrategy implements RouteStrategy {
             return null;
         }
         Route route = new Route();
-        ArrayList<Station> stationList = new ArrayList<>();
 
         List<Station> fromLineStations = from.getLine().getStations();
         List<Station> toLineStations = to.getLine().getStations();
@@ -27,16 +26,12 @@ public class RouteWithOneConnectionStrategy implements RouteStrategy {
                     ArrayList<Station> way = new ArrayList<>();
                     way.addAll(routeOnTheLineStrategy.getRoute(from, srcStation, metroMap).getStations());
                     way.addAll(routeOnTheLineStrategy.getRoute(dstStation, to, metroMap).getStations());
-                    if (stationList.isEmpty() || stationList.size() > way.size()) {
-                        stationList.clear();
-                        stationList.addAll(way);
-                    }
+                    route.setStations(way);
                 }
             }
         }
-        if (stationList.size() == 0) return null;
+        if (route.getStations().isEmpty()) return null;
         {
-            route.setStations(stationList);
             return route;
         }
     }

@@ -5,9 +5,9 @@ import java.util.List;
 
 @Data
 public class Line implements Comparable<Line> {
-    private int number;
-    private String name;
-    private List<Station> stations;
+    private final int number;
+    private final String name;
+    private final List<Station> stations;
 
     public Line(int number, String name)
     {
